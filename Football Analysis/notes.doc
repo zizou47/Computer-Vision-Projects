@@ -1,0 +1,8 @@
+the first step of the project is to detect players in the video by using "yolo8"
+- object detection is a neuron network able to draw a bounding box around the object
+
+To anyone stuck on the !yolo task=detect mode=train model=yolov5x.pt data={dataset.location}/data.yaml epochs=100 imgsz=640 part:
+
+- Run the code below in a separate code line:
+%env PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+- Switch the runtime from CPU to T4/TPU v4
