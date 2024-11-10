@@ -46,6 +46,8 @@ Real-Time Tracking:
 
 Here is the final result as we can see we have two diffrent teams with diffrent colors. 
 
+![Football Analysis](output/final_output.mp4)
+
 ![Football Analysis](images/final_frame.png)
 
 
