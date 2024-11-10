@@ -1,0 +1,124 @@
+the first step of the project is to detect players in the video by using "yolo8"
+- object detection is a neuron network able to draw a bounding box around the object
+
+To anyone stuck on the !yolo task=detect mode=train model=yolov5x.pt data={dataset.location}/data.yaml epochs=100 imgsz=640 part:
+
+- Run the code below in a separate code line:
+%env PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+- Switch the runtime from CPU to T4/TPU v4
+
+
+- training the model on anotations dataset then predict on the video allows yaml file to be applied (good names for players, referee)
+- using yolov5x is good for detecting the ball (check this on google)
+- shutil library allows moving files
+- the video_utils for split video into frames and merge frames into video after applying necessary modefication 
+- tracker for always detecting players even they moves it keep detecting them and not detecting them each time they moves
+(calculate distance or detecting same t-shirt color so we know its the same player should be detected)
+- detect_frame function in tracker set batch size 20 and detect 20 frame each time(each i)
+- some time model detect two things like (player and then person or something else this duo to small of dataset)
+
+
+how tracker works : 
+First, you create an instance of the Tracker class: This model will be used to identify these objects in each frame of the video.
+Now, let's say you have a list of frames (images) extracted from the video: frames [...]
+To detect and track the objects in these frames, you call: tracks = tracker.get_object_tracks(frames)
+Here’s what happens in this process:
+
+Step 1: Detect Objects
+
+The YOLO model is used to detect objects (players, referees, and the ball) in each frame.
+For example, in one frame, YOLO might detect:
+10 players
+2 referees
+1 football
+
+Step 2: Convert and Track
+
+The detections are converted into a format that the ByteTrack tracker can understand.
+The tracker then assigns a unique ID to each detected object. For example:
+Player 1 might be assigned ID 101
+Referee 1 might be assigned ID 201
+The ball might be assigned ID 301
+
+Step 3: Store Tracks
+
+The method returns a dictionary called tracks that stores the bounding boxes and track IDs for each object type (players, referees, and ball) across all frames.
+Here’s how tracks might look for the first few frames:
+
+tracks = {
+    "players": [
+        {101: {"bbox": [100, 200, 150, 250]}, 102: {"bbox": [300, 400, 350, 450]}},  # Frame 1
+        {101: {"bbox": [110, 210, 160, 260]}, 102: {"bbox": [310, 410, 360, 460]}},  # Frame 2
+        # ...
+    ],
+    "referees": [
+        {201: {"bbox": [500, 600, 550, 650]}},  # Frame 1
+        {201: {"bbox": [510, 610, 560, 660]}},  # Frame 2
+        # ...
+    ],
+    "ball": [
+        {301: {"bbox": [700, 800, 720, 820]}},  # Frame 1
+        {301: {"bbox": [705, 805, 725, 825]}},  # Frame 2
+        # ...
+    ]
+}
+
+
+3. Adding Positions to Tracks
+Next, you may want to calculate specific positions from the bounding boxes for easier analysis
+tracker.add_position_to_tracks(tracks)
+
+For the ball: The position is typically the center of the bounding box.
+
+If the bounding box for the ball in a frame is [700, 800, 720, 820], the center would be at (710, 810).
+
+(x1+x2) /2 = 700 + 720  / 2 = 710 same for y.
+
+After running this method, the tracks dictionary will have an additional position field for each object:
+
+tracks = {
+    "players": [
+        {101: {"bbox": [100, 200, 150, 250], "position": [125, 250]}, 102: {"bbox": [300, 400, 350, 450], "position": [325, 450]}},
+        # ...
+    ],
+    "referees": [
+        {201: {"bbox": [500, 600, 550, 650], "position": [525, 650]}},
+        # ...
+    ],
+    "ball": [
+        {301: {"bbox": [700, 800, 720, 820], "position": [710, 810]}},
+        # ...
+    ]
+}
+
+ - for the ellipse cercle sometimes become skinny duo to player width
+4. Interpolating Ball Positions
+Sometimes, the ball might not be detected in all frames, resulting in missing positions. You can interpolate these missing positions:
+
+before; 
+
+ball_positions = [
+    {301: {"bbox": [700, 800, 720, 820]}},  # Frame 1
+    {301: {"bbox": [705, 805, 725, 825]}},  # Frame 2
+    {},  # Frame 3 (missing)
+    {301: {"bbox": [710, 810, 730, 830]}},  # Frame 4
+]
+
+after;
+
+interpolated_ball_positions = [
+    {301: {"bbox": [700, 800, 720, 820]}},  # Frame 1
+    {301: {"bbox": [705, 805, 725, 825]}},  # Frame 2
+    {301: {"bbox": [707.5, 807.5, 727.5, 827.5]}},  # Frame 3 (interpolated)
+    {301: {"bbox": [710, 810, 730, 830]}},  # Frame 4
+]
+
+how Interpolation works :
+First, the bounding box positions of the ball across frames are extracted. If the ball is not detected in some frames,
+ those frames will have missing or empty data.
+Creating a DataFrame (table):
+
+The bounding box positions are then placed into a pandas DataFrame. 
+Each row represents the bounding box of the ball in a particular frame.
+Interpolating Missing Values ex (x3 = x1 + x2 /2)
+bfill (backfill) is used to fill in missing values at the beginning of the DataFrame
