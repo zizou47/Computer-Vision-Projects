@@ -42,12 +42,11 @@ Real-Time Tracking:
 
 ![Football Analysis](images/crops.png)
 
-### Final result:
+### Final result Video:
 
 Here is the final result as we can see we have two diffrent teams with diffrent colors. 
 
-![Football Analysis](output/final_output.mp4)
-
+[Watch the demo video](output/final_output.mp4)
 
 
 
