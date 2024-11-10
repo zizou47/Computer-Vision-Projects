@@ -1,53 +1,58 @@
-Project Title: Football Video Analysis
+# Football Video Analysis
 
-Project Overview
+![Football Analysis](images/banner.png)
 
 This project aims to analyze football videos by detecting and tracking players, referees, and the ball. The following key steps are involved:
 
-Manual Annotation:
-
-A football dataset was manually annotated to provide ground truth information for object detection and tracking.
-Annotations included bounding boxes for players, referees, and the ball.
-Team Identification:
-
-K-Means clustering was employed to group players into two teams based on their spatial proximity and motion patterns.
-Siglip, a powerful feature extraction model, was utilized to extract relevant features for clustering.
-Real-Time Tracking:
-
-YOLOv11, a state-of-the-art object detection and tracking model, was implemented to assign unique IDs to each detected object (player, referee, or ball).
-This enables accurate tracking of objects across video frames.
-Dataset
+### Dataset
 
 A custom football video dataset was created and manually annotated.
 The dataset includes a variety of football match scenarios, covering different playing conditions and camera angles.
 Model Architecture
 
-Siglip: A feature extraction model used for K-Means clustering.
+
+![Football Analysis](images/annotation.png)
+
+
+### YOLO11
+YOLOv11, a state-of-the-art object detection and tracking model, was implemented to assign unique IDs to each detected object (player, referee, or ball).
+This enables accurate tracking of objects across video frames.
+i've trained the model on roboflow.com its better for accuracy and tracking compared to the free gpu of google colab
+
+* Normal Frame
+
+  ![Football Analysis](images/1frame.png)
+
+* After detections, Tracks,
+
+![Football Analysis](images/track_ids.png)
+
+
+
+### Siglip:
+A feature extraction model used for K-Means clustering.
 YOLOv11: A real-time object detection and tracking model for player and object identification.
 Implementation Details
 
-Data Preparation:
-Annotated data was pre-processed to extract relevant information for training and testing.
-Data augmentation techniques were applied to increase the diversity of the dataset.
-Model Training:
-Siglip and YOLOv11 models were trained on the annotated dataset using appropriate loss functions and optimization algorithms.
-Model hyperparameters were tuned to achieve optimal performance.
-Inference and Tracking:
-The trained YOLOv11 model was used to detect and track objects in real-time.
-K-Means clustering was applied to assign players to teams based on their extracted features.
-Tracking information was visualized using appropriate visualization techniques.
-Future Work
 
-Explore advanced tracking algorithms to improve accuracy and robustness.
-Incorporate additional features like player attributes (jersey number, position) for more detailed analysis.
-Develop a user interface to visualize and analyze the tracking results.
-Apply the system to a larger dataset to evaluate its performance in diverse scenarios.
-Acknowledgements
+### Clustering:
+K-Means clustering was employed to group players into two teams based on their spatial proximity and motion patterns.
+Siglip, a powerful feature extraction model, was utilized to extract relevant features for clustering.
+Real-Time Tracking:
 
-We would like to thank the contributors who helped with data annotation and model development.
+![Football Analysis](images/crops.png)
 
-Contact
+### Final result:
 
-[Your Name]
-[Your Email]
-[Your Affiliation]
+Here is the final result as we can see we have two diffrent teams with diffrent colors. 
+
+![Football Analysis](output/final_output.mp4)
+
+![Football Analysis](images/final_frame.png)
+
+
+
+## Conclution:
+In conclusion, the football analysis project effectively tracks players, referees, and the ball, allowing for advanced metrics such as player speed, distance covered, and ball control by team. By leveraging player IDs and tracking data, these metrics can be calculated continuously throughout the match. The project can further enhance team and individual performance analysis, helping to drive insights into game strategies and player efficiency.
+
+[by Ben madani Yazid] 
