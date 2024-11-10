@@ -46,7 +46,7 @@ Real-Time Tracking:
 
 Here is the final result as we can see we have two diffrent teams with diffrent colors. 
 
-[Watch the demo video](output/final output.mp4)
+[Watch the demo video](output/video.mp4)
 
 
 
